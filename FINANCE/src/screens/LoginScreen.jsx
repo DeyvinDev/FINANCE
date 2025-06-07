@@ -57,6 +57,8 @@ export default function LoginScreen({ navigation }) {
           <Button mode="contained" onPress={onLogin} style={styles.button}>
             Entrar
           </Button>
+
+          <Text style={styles.text}>Esqueceu a senha?</Text>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -66,27 +68,30 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0d1b2a',
+    backgroundColor: '#1C1C1C',
     justifyContent: 'center',
     padding: 20,
   },
   box: {
-    backgroundColor: '#1b263b',
+    backgroundColor: '#1C1C1C',
     borderRadius: 8,
     padding: 20,
   },
   title: {
-    color: '#00ff99',
+    color: '#DAA520',
     fontSize: 28,
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#415a77',
+    backgroundColor: '#696969',
   },
   button: {
     marginTop: 10,
-    backgroundColor: '#00ff99',
+    backgroundColor: '#DAA520',
   },
+  text: {
+    color: 'white',
+  }
 });

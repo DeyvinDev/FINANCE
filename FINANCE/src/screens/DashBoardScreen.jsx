@@ -1,3 +1,4 @@
+// DashBoardScreen.js
 import { StyleSheet, View, ScrollView, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Text, Card, Title, Paragraph, Avatar } from 'react-native-paper';
@@ -11,21 +12,87 @@ export default function DashBoardScreen() {
   const [receitas, setReceitas] = useState([]);
   const [moedas, setMoedas] = useState([]);
 
+  const moedasExemplo = [
+    {
+      id: 'bitcoin',
+      name: 'Bitcoin',
+      image: 'https://media.istockphoto.com/id/882085928/vector/blockchain-bitcoin-icon-symbol-vector.jpg?s=612x612&w=0&k=20&c=uv_6f1BKQBRS8UQfz6TZTN2GoOZ--lUHojCpvGvm_4Y=',
+      current_price: 67000.0,
+      price_change_percentage_24h: 1.23,
+    },
+    {
+      id: 'ethereum',
+      name: 'Ethereum',
+      image: 'https://img.icons8.com/fluent/512/ethereum.png',
+      current_price: 3500.0,
+      price_change_percentage_24h: -0.75,
+    },
+    {
+      id: 'solana',
+      name: 'Solana',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsIsJL3zRgUrkD3yE3lD7LK0wZWSiRyY1GVg&s',
+      current_price: 160.0,
+      price_change_percentage_24h: 2.54,
+    },
+    {
+      id: 'dogecoin',
+      name: 'DogeCoin',
+      image: 'https://upload.wikimedia.org/wikipedia/pt/d/d0/Dogecoin_Logo.png',
+      current_price: 0.99,
+      price_change_percentage_24h: 2.54,
+    },
+    {
+      id: 'cardano',
+      name: 'Cardano',
+      image: 'https://cdn4.iconfinder.com/data/icons/crypto-currency-and-coin-2/256/cardano_ada-512.png',
+      current_price: 1.20,
+      price_change_percentage_24h: -0.15,
+    },
+    {
+      id: 'polkadot',
+      name: 'Polkadot',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfy_UnBnPrqfM3qtVAT12pMMRpZ6P05M6vg&s',
+      current_price: 6.75,
+      price_change_percentage_24h: 1.85,
+    },
+    {
+      id: 'litecoin',
+      name: 'Litecoin',
+      image: 'https://s3.coinmarketcap.com/static/img/portraits/630c5fcaf8184351dc5c6ee5.png',
+      current_price: 95.0,
+      price_change_percentage_24h: -1.02,
+    },
+    {
+      id: 'shiba',
+      name: 'Shiba Inu',
+      image: 'https://cryptologos.cc/logos/shiba-inu-shib-logo.png',
+      current_price: 0.000022,
+      price_change_percentage_24h: 4.32,
+    },
+    {
+      id: 'avalanche',
+      name: 'Avalanche',
+      image: 'https://cryptologos.cc/logos/avalanche-avax-logo.png',
+      current_price: 37.5,
+      price_change_percentage_24h: 3.21,
+    },
+    {
+      id: 'tron',
+      name: 'Tron',
+      image: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+      current_price: 0.125,
+      price_change_percentage_24h: -0.92,
+    },
+  ];
+  
+
   useEffect(() => {
     carregarDados();
     buscarMoedas();
   }, []);
 
   const buscarMoedas = async () => {
-    try {
-      const response = await fetch(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd'
-      );
-      const data = await response.json();
-      setMoedas(data.slice(0, 10)); // pega as 10 primeiras moedas
-    } catch (error) {
-      console.error('Erro ao buscar moedas:', error);
-    }
+    setMoedas(moedasExemplo); // usando dados locais
   };
 
   const carregarDados = async () => {
@@ -205,7 +272,7 @@ export default function DashBoardScreen() {
       </Card>
 
       <View style={styles.rowCenter}>
-        <Card style={styles.cardSmall}>
+        <Card style={styles.cardInvest}>
           <Card.Title
             title="Valor Investido"
             titleNumberOfLines={2}
@@ -376,5 +443,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     marginTop: 2,
+  },
+  cardInvest: {
+    width: '100%',
+    backgroundColor: '#2C303A',
   },
 });
