@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
     setErro('');
-    // Navegar para a tela principal (Tabs)
+
     navigation.replace('Home');
   };
 
