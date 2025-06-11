@@ -13,6 +13,9 @@ export default function TransacoesScreen() {
   const [tipo, setTipo] = useState('despesa');
   const [categoria, setCategoria] = useState('Outros');
 
+  const [modoEdicao, setModoEdicao] = useState(false);
+  const [idEditando, setIdEditando] = useState(null);
+
   const STORAGE_KEY = '@transacoes';
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function TransacoesScreen() {
     }
   };
 
-  const adicionarTransacao = () => {
+  const salvarTransacao = () => {
     if (!descricao || !valor || !data) {
       alert('Preencha todos os campos!');
       return;
@@ -50,18 +53,34 @@ export default function TransacoesScreen() {
       return;
     }
 
-    const novaTransacao = {
-      id: Date.now().toString(),
-      tipo,
-      descricao,
-      valor: valorFloat,
-      data,
-      categoria,
-      dataRegistro: new Date().toISOString(),
-    };
+    if (modoEdicao) {
+      const novaLista = transacoes.map((t) =>
+        t.id === idEditando
+          ? {
+              ...t,
+              descricao,
+              valor: valorFloat,
+              data,
+              tipo,
+              categoria,
+            }
+          : t
+      );
+      salvarTransacoes(novaLista);
+    } else {
+      const novaTransacao = {
+        id: Date.now().toString(),
+        tipo,
+        descricao,
+        valor: valorFloat,
+        data,
+        categoria,
+        dataRegistro: new Date().toISOString(),
+      };
+      const novaLista = [novaTransacao, ...transacoes];
+      salvarTransacoes(novaLista);
+    }
 
-    const novaLista = [novaTransacao, ...transacoes];
-    salvarTransacoes(novaLista);
     limparCampos();
     setVisibleDialog(false);
   };
@@ -72,11 +91,24 @@ export default function TransacoesScreen() {
     setData('');
     setTipo('despesa');
     setCategoria('Outros');
+    setModoEdicao(false);
+    setIdEditando(null);
   };
 
   const removerTransacao = (id) => {
     const novaLista = transacoes.filter((t) => t.id !== id);
     salvarTransacoes(novaLista);
+  };
+
+  const iniciarEdicao = (transacao) => {
+    setDescricao(transacao.descricao);
+    setValor(transacao.valor.toString().replace('.', ','));
+    setData(transacao.data);
+    setTipo(transacao.tipo);
+    setCategoria(transacao.categoria);
+    setIdEditando(transacao.id);
+    setModoEdicao(true);
+    setVisibleDialog(true);
   };
 
   return (
@@ -99,9 +131,14 @@ export default function TransacoesScreen() {
                 />
               )}
               right={() => (
-                <Button onPress={() => removerTransacao(item.id)} compact color="#ccc">
-                  Remover
-                </Button>
+                <View style={{ flexDirection: 'row' }}>
+                  <Button onPress={() => iniciarEdicao(item)} compact color="#84dcc6">
+                    Editar
+                  </Button>
+                  <Button onPress={() => removerTransacao(item.id)} compact color="#ccc">
+                    Remover
+                  </Button>
+                </View>
               )}
             />
             <Card.Content>
@@ -118,8 +155,8 @@ export default function TransacoesScreen() {
       <FAB icon="plus" style={styles.fab} onPress={() => setVisibleDialog(true)} />
 
       <Portal>
-        <Dialog visible={visibleDialog} onDismiss={() => setVisibleDialog(false)} style={styles.dialog}>
-          <Dialog.Title>Nova Transação</Dialog.Title>
+        <Dialog visible={visibleDialog} onDismiss={() => { setVisibleDialog(false); limparCampos(); }} style={styles.dialog}>
+          <Dialog.Title>{modoEdicao ? 'Editar Transação' : 'Nova Transação'}</Dialog.Title>
           <Dialog.Content>
             <TextInput
               label="Descrição"
@@ -141,7 +178,7 @@ export default function TransacoesScreen() {
             <MaskedTextInput
               mask="99/99/9999"
               keyboardType="numeric"
-              onChangeText={(text, rawText) => setData(text)}
+              onChangeText={(text) => setData(text)}
               value={data}
               style={[styles.input, styles.maskedInput]}
               placeholder="Data (dd/mm/aaaa)"
@@ -175,8 +212,8 @@ export default function TransacoesScreen() {
             </View>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setVisibleDialog(false)}>Cancelar</Button>
-            <Button onPress={adicionarTransacao}>Adicionar</Button>
+            <Button onPress={() => { setVisibleDialog(false); limparCampos(); }}>Cancelar</Button>
+            <Button onPress={salvarTransacao}>{modoEdicao ? 'Salvar' : 'Adicionar'}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

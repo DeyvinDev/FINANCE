@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Text, TextInput, Button, Title, HelperText } from 'react-native-paper';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ImageBackground } from 'react-native';
+import { Text, TextInput, Button, HelperText } from 'react-native-paper';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -32,34 +32,39 @@ export default function LoginScreen({ navigation }) {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.box}>
-          <Title style={styles.title}>Bem-vindo</Title>
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            style={styles.input}
-            mode="outlined"
-            left={<TextInput.Icon name="email" />}
-          />
-          <TextInput
-            label="Senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
-            style={styles.input}
-            mode="outlined"
-            left={<TextInput.Icon name="lock" />}
-          />
-          {erro ? <HelperText type="error">{erro}</HelperText> : null}
-          <Button mode="contained" onPress={onLogin} style={styles.button}>
-            Entrar
-          </Button>
+        <ImageBackground
+          source={require('C:/Users/24114290166/Documents/FINANCE/imagens/login.png')}
+          style={styles.background}
+          resizeMode="cover"
+        >
+          <View style={styles.box}>
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={styles.input}
+              mode="outlined"
+              left={<TextInput.Icon name="email" />}
+            />
+            <TextInput
+              label="Senha"
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry
+              style={styles.input}
+              mode="outlined"
+              left={<TextInput.Icon name="lock" />}
+            />
+            {erro ? <HelperText type="error">{erro}</HelperText> : null}
+            <Button mode="contained" onPress={onLogin} style={styles.button}>
+              Entrar
+            </Button>
 
-          <Text style={styles.text}>Esqueceu a senha?</Text>
-        </View>
+            <Text style={styles.text}>Esqueceu a senha?</Text>
+          </View>
+        </ImageBackground>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -68,12 +73,14 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1C',
+  },
+  background: {
+    flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 60,
   },
   box: {
-    backgroundColor: '#1C1C1C',
+    
     borderRadius: 8,
     padding: 20,
   },
@@ -93,5 +100,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-  }
+    marginTop: 10,
+    textAlign: 'center',
+  },
 });
