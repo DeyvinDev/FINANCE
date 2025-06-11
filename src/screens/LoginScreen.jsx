@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ImageBackground } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ImageBackground
+} from 'react-native';
 import { Text, TextInput, Button, HelperText } from 'react-native-paper';
 
 export default function LoginScreen({ navigation }) {
@@ -22,7 +30,6 @@ export default function LoginScreen({ navigation }) {
       return;
     }
     setErro('');
-
     navigation.replace('Home');
   };
 
@@ -33,7 +40,7 @@ export default function LoginScreen({ navigation }) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ImageBackground
-          source={require('C:/Users/24114290166/Documents/FINANCE/imagens/login.png')}
+          source={require('../../assets/login.png')}
           style={styles.background}
           resizeMode="cover"
         >
@@ -61,7 +68,6 @@ export default function LoginScreen({ navigation }) {
             <Button mode="contained" onPress={onLogin} style={styles.button}>
               Entrar
             </Button>
-
             <Text style={styles.text}>Esqueceu a senha?</Text>
           </View>
         </ImageBackground>
@@ -80,7 +86,6 @@ const styles = StyleSheet.create({
     padding: 60,
   },
   box: {
-    
     borderRadius: 8,
     padding: 20,
   },

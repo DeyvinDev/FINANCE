@@ -1,11 +1,11 @@
 import { StyleSheet, View, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import React, { useState, useCallback } from 'react';
-import { Text, Card, Title, Avatar } from 'react-native-paper';
+import { Text, Card, Title, Avatar, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart } from 'react-native-chart-kit';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function DashBoardScreen() {
+export default function DashBoardScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [transacoes, setTransacoes] = useState([]);
   const [totalDespesa, setTotalDespesa] = useState(0);
@@ -53,14 +53,20 @@ export default function DashBoardScreen() {
   const saldoAtual = totalReceita - totalDespesa;
 
   const organizarDadosGrafico = () => {
+    const formatarDataParaISO = (dataStr) => {
+      const [dia, mes, ano] = dataStr.split('/');
+      const diaPad = dia.padStart(2, '0');
+      const mesPad = mes.padStart(2, '0');
+      return `${ano}-${mesPad}-${diaPad}`;
+    };
+
     const datas = new Set([
       ...despesas.map(d => d.data),
       ...receitas.map(r => r.data),
     ]);
+
     const datasOrdenadas = Array.from(datas).sort((a, b) => {
-      const [diaA, mesA, anoA] = a.split('/');
-      const [diaB, mesB, anoB] = b.split('/');
-      return new Date(`${anoA}-${mesA}-${diaA}`) - new Date(`${anoB}-${mesB}-${diaB}`);
+      return new Date(formatarDataParaISO(a)) - new Date(formatarDataParaISO(b));
     });
 
     const valoresReceita = datasOrdenadas.map(data =>
@@ -128,49 +134,60 @@ export default function DashBoardScreen() {
         />
         <Card.Content>
           {datasOrdenadas.length > 0 ? (
-            <LineChart
-              data={{
-                labels: datasOrdenadas,
-                datasets: [
-                  {
-                    data: valoresReceita,
-                    color: (opacity = 1) => `rgba(132, 220, 198, ${opacity})`,
-                    strokeWidth: 2,
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <LineChart
+                data={{
+                  labels: datasOrdenadas,
+                  datasets: [
+                    {
+                      data: valoresReceita,
+                      color: (opacity = 1) => `rgba(132, 220, 198, ${opacity})`,
+                      strokeWidth: 2,
+                    },
+                    {
+                      data: valoresDespesa,
+                      color: (opacity = 1) => `rgba(255, 94, 94, ${opacity})`,
+                      strokeWidth: 2,
+                    },
+                  ],
+                  legend: ['Receita', 'Despesa'],
+                }}
+                width={Math.max(Dimensions.get('window').width, datasOrdenadas.length * 120)} 
+                height={240}
+                yAxisLabel="R$ "
+                chartConfig={{
+                  backgroundGradientFrom: '#2C303A',
+                  backgroundGradientTo: '#1B1D22',
+                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  style: { borderRadius: 16 },
+                  propsForDots: {
+                    r: '3',
+                    strokeWidth: '1',
+                    stroke: '#fff',
                   },
-                  {
-                    data: valoresDespesa,
-                    color: (opacity = 1) => `rgba(255, 94, 94, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                ],
-                legend: ['Receita', 'Despesa'],
-              }}
-              width={Dimensions.get('window').width - 32}
-              height={220}
-              yAxisLabel="R$ "
-              chartConfig={{
-                backgroundGradientFrom: '#2C303A',
-                backgroundGradientTo: '#1B1D22',
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: { borderRadius: 16 },
-                propsForDots: {
-                  r: '3',
-                  strokeWidth: '1',
-                  stroke: '#fff',
-                },
-              }}
-              bezier
-              style={{
-                marginVertical: 8,
-                borderRadius: 16,
-              }}
-            />
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+              />
+            </ScrollView>
           ) : (
             <Text style={{ color: '#EAEAEA', textAlign: 'center' }}>Nenhum dado para exibir no gráfico</Text>
           )}
         </Card.Content>
       </Card>
+
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('Login')}
+        style={styles.buttonLogout}
+        contentStyle={{ paddingVertical: 8 }}
+      >
+        Sair
+      </Button>
     </ScrollView>
   );
 }
@@ -243,5 +260,9 @@ const styles = StyleSheet.create({
   },
   iconGraph: {
     backgroundColor: '#2C303A',
+  },
+  buttonLogout: {
+    marginTop: 16,
+    backgroundColor: '#FF5E5E',
   },
 });
